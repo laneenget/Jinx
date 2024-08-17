@@ -12,6 +12,7 @@ public abstract class JinxApp : Window{
 
     private static JinxApp instance;
 
+    // TODO: Fix instantiation
     // Ensure there is only one instance of this class at any time.
     public static JinxApp GetInstance() {
 
