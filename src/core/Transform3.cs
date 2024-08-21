@@ -14,7 +14,7 @@ public namespace Jinx.src.core {
 
         public Vector3 position { get; set; }
         public Quaternion rotation { get; set; }
-        public Vector3 scale; { get; set; }
+        public Vector3 scale; { get; sets; }
         public bool visible { get; set; }
 
         public bool autoUpdateMatrix { get; set; }
