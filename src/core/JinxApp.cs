@@ -8,7 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Numerics;
 
-public abstract class JinxApp : Window{
+public abstract class JinxApp : Window {
 
     private static JinxApp instance;
 
@@ -150,7 +150,7 @@ public abstract class JinxApp : Window{
 
         if(this.previousTouches.length == 1) {
 
-            Point currentPosition = touchEvent.GetTouchPoints(this).Position;
+            Point currentPosition = touchEvent.GetTouchPoints(this)[0].Position;
             
             MouseButtonEventArgs mouseEventArgs = new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Left){
                 RoutedEvent = type switch {
@@ -213,7 +213,7 @@ public abstract class JinxApp : Window{
     }
 
     private double DistanceBetweenPoints(Vector2 point1, Vector2 point2) {
-        return Math.sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2));
+        return (float)Math.sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2));
     }
 
     public abstract void CreateScene(){}

@@ -1,4 +1,4 @@
-/* Managers transformations for an object in 3D space. Handles
+/* Manages transformations for an object in 3D space. Handles
 position, rotation, and scaling of an object and maintains the
 relationships between parent and child objects in a trans-
 formation hierarchy */
@@ -7,10 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 
-public namespace Jinx.src.core {
+public namespace Jinx.Src.Core {
     public class Transform3 {
 
-        public List<Transform3> children {get; private set; }
+        public List<Transform3> children { get; private set; }
 
         public Vector3 position { get; set; }
         public Quaternion rotation { get; set; }
@@ -30,17 +30,17 @@ public namespace Jinx.src.core {
         public Transform3() {
 
             this.children = new List<Transform3>();
-            this.position = new Vector3.ZERO;
-            this.rotation = new Quaternion.Identity;
+            this.position = Vector3.ZERO;
+            this.rotation = Quaternion.IDENTITY;
             this.scale = new Vector3(1, 1, 1);
             this.visible = true;
 
             this.autoUpdateMatrix = true;
-            this.matrix = Matrix4.Identity;
-            this.worldMatrix = Matrix4.Identity;
+            this.matrix = Matrix4.IDENTITY;
+            this.worldMatrix = Matrix4.IDENTITY;
 
             this.worldPosition = Vector3.ZERO;
-            this.worldRotation = Quaternion.Identity;
+            this.worldRotation = Quaternion.IDENTITY;
             this.worldScale = Vector3.ONE;
 
             this.parent = null;
@@ -60,9 +60,9 @@ public namespace Jinx.src.core {
         public void ComputeWorldTransform() {
             
             if (this.autoUpdateMatrix) {
-                this.matrix = Matrix4.CreateScale(this.Scale) *
-                            Matrix4.CreateFromQuaternion(this.Rotation) *
-                            Matrix4.CreateTranslation(this.Position); 
+                this.matrix = Matrix4.CreateScale(this.scale) *
+                            Matrix4.CreateFromQuaternion(this.rotation) *
+                            Matrix4.CreateTranslation(this.position); 
             }
 
             if (this.parent != null) {
@@ -82,6 +82,7 @@ public namespace Jinx.src.core {
         }
 
         public void Add(Transform3 child) {
+            
             this.children.Add(child);
             child.parent = this;
         }

@@ -130,14 +130,14 @@ namespace Jinx.Src.Math {
 
         public void SetEulerAngles(float yaw, float pitch, float roll) {
 
-            const cosPitch = (float)Math.Cos(pitch / 2);
-            const sinPitch = (float)Math.Sin(pitch / 2);
+            float cosPitch = (float)Math.Cos(pitch / 2);
+            float sinPitch = (float)Math.Sin(pitch / 2);
 
-            const cosYaw = (float)Math.Cos(yaw / 2);
-            const sinYaw = (float)Math.Sin(yaw / 2);
+            float cosYaw = (float)Math.Cos(yaw / 2);
+            float sinYaw = (float)Math.Sin(yaw / 2);
 
-            const cosRoll = (float)Math.Cos(-roll / 2);
-            const sinRoll = (float)Math.Sin(-roll / 2);
+            float cosRoll = (float)Math.Cos(-roll / 2);
+            float sinRoll = (float)Math.Sin(-roll / 2);
 
             this.x = sinPitch * cosYaw * cosRoll + cosPitch * sinYaw * sinRoll;
             this.y = cosPitch * sinYaw * cosRoll - sinPitch * cosYaw * sinRoll;
