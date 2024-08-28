@@ -31,13 +31,13 @@ public abstract class JinxApp : Window {
 
     private long time;
     private bool paused;
-    private Vector2[] previousTouches;
+    private List<Vector2> previousTouches;
 
     public JinxApp() {
 
         this.time = DateTime.Now.Ticks;
         this.paused = false;
-        this.previousTouches = new Vector2[0];
+        this.previousTouches = new List<Vector2>;
 
         this.camera = new Camera();
         this.scene = new Scene();

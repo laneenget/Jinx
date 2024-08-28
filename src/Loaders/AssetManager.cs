@@ -2,15 +2,15 @@ namespace Jinx.Src.Loaders {
 
     public class AssetManager {
 
-        public string[] requestedAssets;
-        public string[] loadedAssets;
-        public string[] errorAssets;
+        public List<string> requestedAssets;
+        public List<string> loadedAssets;
+        public List<string> errorAssets;
 
         public AssetManager() {
 
-            this.requestedAssets = new string[0];
-            this.loadedAssets = new string[0];
-            this.errorAssets = new string[0];
+            this.requestedAssets = new List<string>();
+            this.loadedAssets = new List<string>();
+            this.errorAssets = new List<string>();
         }
 
         public bool AllAssetsLoaded() {
