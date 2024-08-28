@@ -86,7 +86,7 @@ public abstract class JinxApp : Window {
     }
 
     public void Resize() {
-        this.renderer.Resize((int)this.ActualWidth, (int)this.ActualHeight, this.camera.GetAspectRatio())
+        this.renderer.Resize((int)this.ActualWidth, (int)this.ActualHeight, this.camera.GetAspectRatio());
     }
 
     public void OnTouchStart(object sender, TouchEventArgs e) {
@@ -105,9 +105,9 @@ public abstract class JinxApp : Window {
         var touchPoints = e.GetTouchPoints(this);
 
         if (touchPoints.Count == 1) {
-            SimulateMouseEvent("mousemove", e)
+            SimulateMouseEvent("mousemove", e);
         } else {
-            SimulateWheelEvent(e)
+            SimulateWheelEvent(e);
         }
     }
 
@@ -148,7 +148,7 @@ public abstract class JinxApp : Window {
 
     private void SimulateMouseEvent(string type, TouchEventArgs touchEvent) {
 
-        if(this.previousTouches.length == 1) {
+        if(this.previousTouches.Length == 1) {
 
             Point currentPosition = touchEvent.GetTouchPoints(this)[0].Position;
             
@@ -213,7 +213,7 @@ public abstract class JinxApp : Window {
     }
 
     private double DistanceBetweenPoints(Vector2 point1, Vector2 point2) {
-        return (float)Math.sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2));
+        return (float)Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2));
     }
 
     public abstract void CreateScene(){}

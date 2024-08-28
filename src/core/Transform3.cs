@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 
-public namespace Jinx.Src.Core {
+namespace Jinx.Src.Core {
     public class Transform3 {
 
         public List<Transform3> children { get; private set; }
@@ -82,7 +82,7 @@ public namespace Jinx.Src.Core {
         }
 
         public void Add(Transform3 child) {
-            
+
             this.children.Add(child);
             child.parent = this;
         }
