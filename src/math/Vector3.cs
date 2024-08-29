@@ -217,6 +217,7 @@ namespace Jinx.Src.Math{
         }
 
         public float AngleBetween(Vector3 v) {
+            
             var v1Norm = Vector3.Normalize(this);
             var v2Norm = Vector3.Normalize(v);
 
