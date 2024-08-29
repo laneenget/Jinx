@@ -5,7 +5,7 @@ formation hierarchy */
 
 using System;
 using System.Collections.Generic;
-using System.Numerics;
+using Jinx.Src.Math;
 
 namespace Jinx.Src.Core {
     public class Transform3 {

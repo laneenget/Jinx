@@ -1,3 +1,6 @@
+using System;
+using Jinx.Src.Math;
+
 namespace Jinx.Src.Core {
 
     public class Camera : Transform3 {

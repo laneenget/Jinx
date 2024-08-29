@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Jinx.Src.Loaders {
 
     public class AssetManager {

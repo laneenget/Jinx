@@ -1,5 +1,6 @@
 /* Represents a vector in 3D space. Includes methods for
 Vector3 objects and included data types */
+using System;
 
 namespace Jinx.Src.Math{
     public class Vector3{
@@ -217,7 +218,7 @@ namespace Jinx.Src.Math{
         }
 
         public float AngleBetween(Vector3 v) {
-            
+
             var v1Norm = Vector3.Normalize(this);
             var v2Norm = Vector3.Normalize(v);
 

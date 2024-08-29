@@ -1,3 +1,5 @@
+using System;
+
 namespace Jinx.Src.Math {
 
     public class Quaternion {

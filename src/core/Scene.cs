@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Jinx.Src.Math;
+
 namespace Jinx.Src.Core {
 
     public class Scene {
