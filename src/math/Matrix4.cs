@@ -35,7 +35,7 @@ namespace Jinx.Src.Math {
 
         public static Matrix4 FromRowMajor(float n1, float n2, float n3,
             float n4, float n5, float n6, float n7, float n8,
-            float n9, float n10, float n11, float n12, float n13
+            float n9, float n10, float n11, float n12, float n13,
             float n14, float n15, float n16) {
                 
                 var matrix = new Matrix4();
@@ -98,7 +98,15 @@ namespace Jinx.Src.Math {
             return matrix;
         }
 
-        public static Matrix4 MakeTransform(position=Vector3.ZERO, rotation=Quaternion.IDENTITY, scale=Vector3.UP) {
+        public static Matrix4 MakeTransform(Vector3 position) {
+            return MakeTransform(position, Quaternion.IDENTITY, Vector3.ONE);
+        }
+
+        public static Matrix4 MakeTransform(Vector3 position, Quaternion rotation) {
+            return MakeTransform(position, rotation, Vector3.ONE);
+        }
+
+        public static Matrix4 MakeTransform(Vector3 position, Quaternion rotation, Vector3 scale) {
 
             var matrix = new Matrix4();
             matrix.MakeTransform(position, rotation, scale);
@@ -135,12 +143,12 @@ namespace Jinx.Src.Math {
 
         Matrix4() {
 
-            this.mat = [
+            this.mat.AddRange(new float[] {
                 1, 0, 0, 0,
                 0, 1, 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1
-            ];
+            });
         }
 
         public void SetColumnMajor(float n1, float n2, float n3, float n4,
@@ -214,7 +222,7 @@ namespace Jinx.Src.Math {
 
         public void Set(float value, float row, float col) {
 
-            this.mat[col*4 + row];
+            this.mat[(int)(col*4 + row)] = value;
         }
 
         public void Multiply(Matrix4 m) {
@@ -267,7 +275,7 @@ namespace Jinx.Src.Math {
             this.SetRowMajor(
                 (float)cosTheta, -(float)sinTheta, 0, 0,
                 (float)sinTheta, (float)cosTheta, 0, 0,
-                0, 0, 1, 0.
+                0, 0, 1, 0,
                 0, 0, 0, 1
             );
         }
@@ -328,6 +336,14 @@ namespace Jinx.Src.Math {
             );
         }
 
+        public void MakeTransform(Vector3 position) {
+            MakeTransform(position, Quaternion.IDENTITY, Vector3.ONE);
+        }
+
+        public void MakeTransform(Vector3 position, Quaternion rotation) {
+            MakeTransform(position, rotation, Vector3.ONE);
+        }
+
         public void MakeTransform(position=Vector3.ZERO, rotation=Quaternion.IDENTITY, scale=Vector3.ONE) {
 
             this.MakeTranslation(position);
@@ -365,7 +381,7 @@ namespace Jinx.Src.Math {
 
         public float Determinant() {
 
-            const determinant =
+            float determinant =
                 this.mat[3] * this.mat[6] * this.mat[9] * this.mat[12]-
                 this.mat[2] * this.mat[7] * this.mat[9] * this.mat[12]-
                 this.mat[3] * this.mat[5] * this.mat[10] * this.mat[12]+
