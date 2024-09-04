@@ -318,6 +318,249 @@ namespace Jinx.Src.Math {
             this.MakeFrustrum(-xMax, xMax, -yMax, yMax, near, far);
         }
 
-        
+        public void MakeFrustrum(float left, float right, float bottom, float top, float near, float far) {
+
+            this.SetRowMajor(
+                2*near/(right-left), 0, (right+left)/(right-left), 0,
+                0, 2*near/(top-bottom), (top+bottom)/(top-bottom), 0,
+                0, 0, -(far+near)/(far-near), -2*far*near/(far-near),
+                0, 0, -1, 0
+            );
+        }
+
+        public void MakeTransform(position=Vector3.ZERO, rotation=Quaternion.IDENTITY, scale=Vector3.ONE) {
+
+            this.MakeTranslation(position);
+            this.Multiply(rotation.GetMatrix());
+            this.Multiply(Matrix4.MakeScale(scale));
+        }
+
+        public void LookAt(Vector3 eye, Vector3 target, up=Vector3.UP) {
+
+            var z = Vector3.Subtract(eye, target);
+            z.Normalize();
+
+            var x = Vector3.Cross(up, z);
+            x.Normalize();
+
+            var y = Vector3.Cross(z, x);
+
+            var rotation = Matrix4.FromRowMajor(
+                x.x, y.x, z.x, 0,
+                x.y, y.y, z.y, 0,
+                x.z, y.z, z.z, 0,
+                0, 0, 0, 1
+            );
+
+            var translation = Matrix4.MakeTranslation(eye);
+            this.Copy(Matrix4.Multiply(rotation, translation));
+        }
+
+        public void MultiplyScalar(float x) {
+
+            for (int i = 0; i < 16; i++) {
+                this.mat[i] *= x;
+            }
+        }
+
+        public float Determinant() {
+
+            const determinant =
+                this.mat[3] * this.mat[6] * this.mat[9] * this.mat[12]-
+                this.mat[2] * this.mat[7] * this.mat[9] * this.mat[12]-
+                this.mat[3] * this.mat[5] * this.mat[10] * this.mat[12]+
+                this.mat[1] * this.mat[7] * this.mat[10] * this.mat[12]+
+                this.mat[2] * this.mat[5] * this.mat[11] * this.mat[12]-
+                this.mat[1] * this.mat[6] * this.mat[11] * this.mat[12]-
+                this.mat[3] * this.mat[6] * this.mat[8] * this.mat[13]+
+                this.mat[2] * this.mat[7] * this.mat[8] * this.mat[13]+
+                this.mat[3] * this.mat[4] * this.mat[10] * this.mat[13]-
+                this.mat[0] * this.mat[7] * this.mat[10] * this.mat[13]-
+                this.mat[2] * this.mat[4] * this.mat[11] * this.mat[13]+
+                this.mat[0] * this.mat[6] * this.mat[11] * this.mat[13]+
+                this.mat[3] * this.mat[5] * this.mat[8] * this.mat[14]-
+                this.mat[1] * this.mat[7] * this.mat[8] * this.mat[14]-
+                this.mat[3] * this.mat[4] * this.mat[9] * this.mat[14]+
+                this.mat[0] * this.mat[7] * this.mat[9] * this.mat[14]+
+                this.mat[1] * this.mat[4] * this.mat[11] * this.mat[14]-
+                this.mat[0] * this.mat[5] * this.mat[11] * this.mat[14]-
+                this.mat[2] * this.mat[5] * this.mat[8] * this.mat[15]+
+                this.mat[1] * this.mat[6] * this.mat[8] * this.mat[15]+
+                this.mat[2] * this.mat[4] * this.mat[9] * this.mat[15]-
+                this.mat[0] * this.mat[6] * this.mat[9] * this.mat[15]-
+                this.mat[1] * this.mat[4] * this.mat[10] * this.mat[15]+
+                this.mat[0] * this.mat[5] * this.mat[10] * this.mat[15];
+
+            return determinant;
+        }
+
+        public Matrix4 Inverse() {
+
+            float determinant = this.Determinant();
+            if ((float)Math.Abs(determinant) < 1e-8) {
+                return new Matrix4();
+            }
+
+            var inverse = new Matrix4();
+
+            inverse.mat[0] = (this.mat[6]*this.mat[11]*this.mat[13] -
+                this.mat[7]*this.mat[10]*this.mat[13] +
+                this.mat[7]*this.mat[9]*this.mat[14] -
+                this.mat[5]*this.mat[11]*this.mat[14] -
+                this.mat[6]*this.mat[9]*this.mat[15] +
+                this.mat[5]*this.mat[10]*this.mat[15])/determinant;
+
+            inverse.mat[1] = (this.mat[3]*this.mat[10]*this.mat[13] -
+                this.mat[2]*this.mat[11]*this.mat[13] -
+                this.mat[3]*this.mat[9]*this.mat[14] +
+                this.mat[1]*this.mat[11]*this.mat[14] +
+                this.mat[2]*this.mat[9]*this.mat[15] -
+                this.mat[1]*this.mat[10]*this.mat[15])/determinant;
+            
+            inverse.mat[2] = (this.mat[2]*this.mat[7]*this.mat[13] -
+                this.mat[3]*this.mat[6]*this.mat[13] +
+                this.mat[3]*this.mat[5]*this.mat[14] -
+                this.mat[1]*this.mat[7]*this.mat[14] -
+                this.mat[2]*this.mat[5]*this.mat[15] +
+                this.mat[1]*this.mat[6]*this.mat[15])/determinant;
+            
+            inverse.mat[3] = (this.mat[3]*this.mat[6]*this.mat[9] -
+                this.mat[2]*this.mat[7]*this.mat[9] -
+                this.mat[3]*this.mat[5]*this.mat[10] +
+                this.mat[1]*this.mat[7]*this.mat[10] +
+                this.mat[2]*this.mat[5]*this.mat[11] -
+                this.mat[1]*this.mat[6]*this.mat[11])/determinant;
+
+            inverse.mat[4] = (this.mat[7]*this.mat[10]*this.mat[12] -
+                this.mat[6]*this.mat[11]*this.mat[12] -
+                this.mat[7]*this.mat[8]*this.mat[14] +
+                this.mat[4]*this.mat[11]*this.mat[14] +
+                this.mat[6]*this.mat[8]*this.mat[15] -
+                this.mat[4]*this.mat[10]*this.mat[15])/determinant;
+                
+            inverse.mat[5] = (this.mat[2]*this.mat[11]*this.mat[12] -
+                this.mat[3]*this.mat[10]*this.mat[12] +
+                this.mat[3]*this.mat[8]*this.mat[14] -
+                this.mat[0]*this.mat[11]*this.mat[14] -
+                this.mat[2]*this.mat[8]*this.mat[15] +
+                this.mat[0]*this.mat[10]*this.mat[15])/determinant;
+                
+            inverse.mat[6] = (this.mat[3]*this.mat[6]*this.mat[12] -
+                this.mat[2]*this.mat[7]*this.mat[12] -
+                this.mat[3]*this.mat[4]*this.mat[14] +
+                this.mat[0]*this.mat[7]*this.mat[14] +
+                this.mat[2]*this.mat[4]*this.mat[15] -
+                this.mat[0]*this.mat[6]*this.mat[15])/determinant;
+                
+            inverse.mat[7] = (this.mat[2]*this.mat[7]*this.mat[8] -
+                this.mat[3]*this.mat[6]*this.mat[8] +
+                this.mat[3]*this.mat[4]*this.mat[10] -
+                this.mat[0]*this.mat[7]*this.mat[10] -
+                this.mat[2]*this.mat[4]*this.mat[11] +
+                this.mat[0]*this.mat[6]*this.mat[11])/determinant;
+                
+            inverse.mat[8] = (this.mat[5]*this.mat[11]*this.mat[12] -
+                this.mat[7]*this.mat[9]*this.mat[12] +
+                this.mat[7]*this.mat[8]*this.mat[13] -
+                this.mat[4]*this.mat[11]*this.mat[13] -
+                this.mat[5]*this.mat[8]*this.mat[15] +
+                this.mat[4]*this.mat[9]*this.mat[15])/determinant;
+                
+            inverse.mat[9] = (this.mat[3]*this.mat[9]*this.mat[12] -
+                this.mat[1]*this.mat[11]*this.mat[12] -
+                this.mat[3]*this.mat[8]*this.mat[13] +
+                this.mat[0]*this.mat[11]*this.mat[13] +
+                this.mat[1]*this.mat[8]*this.mat[15] -
+                this.mat[0]*this.mat[9]*this.mat[15])/determinant;
+                
+            inverse.mat[10] = (this.mat[1]*this.mat[7]*this.mat[12] -
+                this.mat[3]*this.mat[5]*this.mat[12] +
+                this.mat[3]*this.mat[4]*this.mat[13] -
+                this.mat[0]*this.mat[7]*this.mat[13] -
+                this.mat[1]*this.mat[4]*this.mat[15] +
+                this.mat[0]*this.mat[5]*this.mat[15])/determinant;
+                
+            inverse.mat[11] = (this.mat[3]*this.mat[5]*this.mat[8] -
+                this.mat[1]*this.mat[7]*this.mat[8] -
+                this.mat[3]*this.mat[4]*this.mat[9] +
+                this.mat[0]*this.mat[7]*this.mat[9] +
+                this.mat[1]*this.mat[4]*this.mat[11] -
+                this.mat[0]*this.mat[5]*this.mat[11])/determinant;
+                
+            inverse.mat[12] = (this.mat[6]*this.mat[9]*this.mat[12] -
+                this.mat[5]*this.mat[10]*this.mat[12] -
+                this.mat[6]*this.mat[8]*this.mat[13] +
+                this.mat[4]*this.mat[10]*this.mat[13] +
+                this.mat[5]*this.mat[8]*this.mat[14] -
+                this.mat[4]*this.mat[9]*this.mat[14])/determinant;
+                
+            inverse.mat[13] = (this.mat[1]*this.mat[10]*this.mat[12] -
+                this.mat[2]*this.mat[9]*this.mat[12] +
+                this.mat[2]*this.mat[8]*this.mat[13] -
+                this.mat[0]*this.mat[10]*this.mat[13] -
+                this.mat[1]*this.mat[8]*this.mat[14] +
+                this.mat[0]*this.mat[9]*this.mat[14])/determinant;
+            
+            inverse.mat[14] = (this.mat[2]*this.mat[5]*this.mat[12] -
+                this.mat[1]*this.mat[6]*this.mat[12] -
+                this.mat[2]*this.mat[4]*this.mat[13] +
+                this.mat[0]*this.mat[6]*this.mat[13] +
+                this.mat[1]*this.mat[4]*this.mat[14] -
+                this.mat[0]*this.mat[5]*this.mat[14])/determinant;
+            
+            inverse.mat[15] = (this.mat[1]*this.mat[6]*this.mat[8] -
+                this.mat[2]*this.mat[5]*this.mat[8] +
+                this.mat[2]*this.mat[4]*this.mat[9] -
+                this.mat[0]*this.mat[6]*this.mat[9] -
+                this.mat[1]*this.mat[4]*this.mat[10] +
+                this.mat[0]*this.mat[5]*this.mat[10])/determinant;
+
+            return inverse;
+        }
+
+        public void Invert(){
+
+            var inverseMatrix = this.Inverse();
+            this.Copy(inverseMatrix);
+        }
+
+        public Matrix4 Transpose() {
+
+            return Matrix4.FromRowMajor(
+                this.mat[0], this.mat[1], this.mat[2], this.mat[3],
+                this.mat[4], this.mat[5], this.mat[6], this.mat[7],
+                this.mat[8], this.mat[9], this.mat[10], this.mat[11],
+                this.mat[12], this.mat[13], this.mat[14], this.mat[15]
+            );
+        }
+
+        public void Decompose(Vector3 position, Quaternion rotation, Vector3 scale) {
+
+            position.SetPositionFromMatrix(this);
+            scale.SetScaleFromMatrix(this);
+
+            var rotationMatrix = new Matrix4();
+            rotationMatrix.mat[0] = this.mat[0] / scale.x;
+            rotationMatrix.mat[1] = this.mat[1] / scale.x;
+            rotationMatrix.mat[2] = this.mat[2] / scale.x;
+            rotationMatrix.mat[3] = 0;
+
+            rotationMatrix.mat[4] = this.mat[4] / scale.y;
+            rotationMatrix.mat[5] = this.mat[5] / scale.y;
+            rotationMatrix.mat[6] = this.mat[6] / scale.y;
+            rotationMatrix.mat[7] = 0;
+
+            rotationMatrix.mat[8] = this.mat[8] / scale.z;
+            rotationMatrix.mat[9] = this.mat[9] / scale.z;
+            rotationMatrix.mat[10] = this.mat[10] / scale.z;
+            rotationMatrix.mat[11] = 0;
+
+            rotationMatrix.mat[12] = 0;
+            rotationMatrix.mat[13] = 0;
+            rotationMatrix.mat[14] = 0;
+            rotationMatrix.mat[15] = 1;
+
+            rotation.SetMatrix(rotationMatrix);
+        }
     }
 }
