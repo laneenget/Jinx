@@ -40,5 +40,50 @@ namespace Jinx.Src.Lights {
                 this.lights.Add(light);
             }
         }
+
+        public float GetNumLights() {
+
+            return this.lights.Count;
+        }
+
+        public void UpdateLights() {
+
+            foreach (Light light in this.lights) {
+
+                var (worldPosition, worldRotation, worldScale) = light.WorldMatrix.Decompose();
+
+                lightPositions.Add(worldPosition.X);
+                lightPositions.Add(worldPosition.Y);
+                lightPositions.Add(worldPosition.Z);
+
+                lightTypes.Add(light.GetType());
+
+                if (light.Visible) {
+                    ambientIntensities.Add(light.AmbientIntensity.X);
+                    ambientIntensities.Add(light.AmbientIntensity.Y);
+                    ambientIntensities.Add(light.AmbientIntensity.Z);
+
+                    diffuseIntensities.Add(light.DiffuseIntensity.X);
+                    diffuseIntensities.Add(light.DiffuseIntensity.Y);
+                    diffuseIntensities.Add(light.DiffuseIntensity.Z);
+
+                    specularIntensities.Add(light.SpecularIntensity.X);
+                    specularIntensities.Add(light.SpecularIntensity.Y);
+                    specularIntensities.Add(light.SpecularIntensity.Z);
+                } else {
+                    ambientIntensities.Add(0);
+                    ambientIntensities.Add(0);
+                    ambientIntensities.Add(0);
+
+                    diffuseIntensities.Add(0);
+                    diffuseIntensities.Add(0);
+                    diffuseIntensities.Add(0);
+
+                    specularIntensities.Add(0);
+                    specularIntensities.Add(0);
+                    specularIntensities.Add(0);
+                }
+            }
+        }
     }
 }

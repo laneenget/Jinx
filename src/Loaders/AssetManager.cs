@@ -16,7 +16,7 @@ namespace Jinx.Src.Loaders {
         }
 
         public bool AllAssetsLoaded() {
-            return this.requestedAssets.length == (this.loadedAssets.length + this.errorAssets.length);
+            return this.requestedAssets.Count == (this.loadedAssets.length + this.errorAssets.length);
         }
     }
 }
