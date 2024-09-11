@@ -78,13 +78,13 @@ namespace Jinx.Src.Core {
 
         public void UpdateWorldMatrix() {
 
-            if (this.AutoUpdateMatrix) {
+            if (this.autoUpdateMatrix) {
                 this.matrix.Compose(this.position, this.rotation, this.scale);
             }
 
             if (this.parent != null) {
                 this.parent.UpdateWorldMatrix();
-                this.worldMatrix.Copy(this.parent.WorldMatrix);
+                this.worldMatrix.Copy(this.parent.worldMatrix);
                 this.worldMatrix.Multiply(this.matrix);
             } else {
                 this.worldMatrix.Copy(this.matrix);
