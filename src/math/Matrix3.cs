@@ -9,9 +9,7 @@ namespace Jinx.Src.Math {
 
             var m = new Matrix3();
 
-            m.mat[0] = test
-
-            test
+            m.mat[0] = 
         }
     }
 }
